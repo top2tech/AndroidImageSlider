@@ -12,7 +12,7 @@ android {
     }
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
@@ -22,9 +22,10 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:20.+'
-    compile "com.android.support:support-v4:20.0.+"
+    compile 'com.android.support:support-v4:20.0.+'
     compile 'com.nineoldandroids:library:+'
+    compile files('src/main/libs/universal-image-loader-1.9.3.jar')
 }
 apply from: './gradle-mvn-push.gradle'

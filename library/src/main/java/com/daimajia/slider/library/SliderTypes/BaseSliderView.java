@@ -61,7 +61,7 @@ public abstract class BaseSliderView {
 	/*
 	 * Universal Image Loader Option
 	 */
-	DisplayImageOptions options;
+	protected static DisplayImageOptions sOptions;
 
 	public enum ScaleType {
 		CenterCrop, CenterInside, Fit, FitCenterCrop
@@ -216,14 +216,7 @@ public abstract class BaseSliderView {
 		});
 
 		mLoadListener.onStart(me);
-		/*
-		 * set option values
-		 */
-		options = new DisplayImageOptions.Builder().cacheInMemory(true)
-				.cacheOnDisk(true).considerExifParams(true)
-				.displayer(new FadeInBitmapDisplayer(300, true, true, true))
-				.delayBeforeLoading(100).resetViewBeforeLoading(true)
-				.bitmapConfig(Bitmap.Config.RGB_565).build();
+
 		if (!ImageLoader.getInstance().isInited()) {
 			initImageLoader(mContext);
 		}
@@ -285,15 +278,21 @@ public abstract class BaseSliderView {
 				.diskCacheSize(50 * 1024 * 1024)
 				// 50 Mb
 				.tasksProcessingOrder(QueueProcessingType.LIFO)
-				.writeDebugLogs() // Remove for release app
+			//	.writeDebugLogs() // Remove for release app
 				.build();
+
+		sOptions = new DisplayImageOptions.Builder().cacheInMemory(true)
+				.cacheOnDisk(true).considerExifParams(true)
+				.displayer(new FadeInBitmapDisplayer(300, true, true, true))
+				.delayBeforeLoading(100).resetViewBeforeLoading(true)
+				.bitmapConfig(Bitmap.Config.RGB_565).build();
 
 		ImageLoader.getInstance().init(config);
 	}
 
 	private void showImage(final View v, String imageUri,
 			final ImageView imageView) {
-		ImageLoader.getInstance().displayImage(imageUri, imageView, options,
+		ImageLoader.getInstance().displayImage(imageUri, imageView, sOptions,
 				new SimpleImageLoadingListener() {
 					@Override
 					public void onLoadingStarted(String imageUri, View view) {

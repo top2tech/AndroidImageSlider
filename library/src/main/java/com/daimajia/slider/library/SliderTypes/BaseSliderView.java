@@ -15,6 +15,7 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.nostra13.universalimageloader.utils.L;
 
 import java.io.File;
 
@@ -61,7 +62,7 @@ public abstract class BaseSliderView {
 	/*
 	 * Universal Image Loader Option
 	 */
-	protected static DisplayImageOptions sOptions;
+	DisplayImageOptions options;
 
 	public enum ScaleType {
 		CenterCrop, CenterInside, Fit, FitCenterCrop
@@ -216,7 +217,13 @@ public abstract class BaseSliderView {
 		});
 
 		mLoadListener.onStart(me);
-
+		/*
+		 * set option values
+		 */
+		options = new DisplayImageOptions.Builder().cacheInMemory(true)
+				.cacheOnDisk(true).considerExifParams(true)
+				.resetViewBeforeLoading(true)
+				.bitmapConfig(Bitmap.Config.RGB_565).build();
 		if (!ImageLoader.getInstance().isInited()) {
 			initImageLoader(mContext);
 		}
@@ -281,18 +288,13 @@ public abstract class BaseSliderView {
 			//	.writeDebugLogs() // Remove for release app
 				.build();
 
-		sOptions = new DisplayImageOptions.Builder().cacheInMemory(true)
-				.cacheOnDisk(true).considerExifParams(true)
-				.displayer(new FadeInBitmapDisplayer(300, true, true, true))
-				.delayBeforeLoading(100).resetViewBeforeLoading(true)
-				.bitmapConfig(Bitmap.Config.RGB_565).build();
-
+		L.writeLogs(false);
 		ImageLoader.getInstance().init(config);
 	}
 
 	private void showImage(final View v, String imageUri,
 			final ImageView imageView) {
-		ImageLoader.getInstance().displayImage(imageUri, imageView, sOptions,
+		ImageLoader.getInstance().displayImage(imageUri, imageView, options,
 				new SimpleImageLoadingListener() {
 					@Override
 					public void onLoadingStarted(String imageUri, View view) {
@@ -303,6 +305,7 @@ public abstract class BaseSliderView {
 					public void onLoadingComplete(String imageUri, View view,
 							Bitmap loadedImage) {
 
+//						imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 						imageView.setImageBitmap(loadedImage);
 						if (v.findViewById(R.id.loading_bar) != null) {
 							v.findViewById(R.id.loading_bar).setVisibility(
